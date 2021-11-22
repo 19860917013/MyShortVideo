@@ -7,6 +7,13 @@
     <groupId>com.imooc</groupId>
     <artifactId>imooc-red-book-dev</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>book-common</module>
+        <module>book-model</module>
+        <module>book-mapper</module>
+        <module>book-service</module>
+        <module>book-api</module>
+    </modules>
 
     <packaging>pom</packaging>
 
