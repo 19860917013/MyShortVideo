@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("passport")
 @Slf4j
-public class PassportController extends BaseController {
+public class PassportController extends BaseInfoProperties {
 
     @Autowired
     private SMSUtils smsUtils;
