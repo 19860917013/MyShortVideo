@@ -1,6 +1,8 @@
 package com.imooc.intercepter;
 
 import com.imooc.controller.BaseInfoProperties;
+import com.imooc.exceptions.GraceException;
+import com.imooc.grace.result.ResponseStatusEnum;
 import com.imooc.utils.IPUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -29,6 +31,7 @@ public class PassportInterceptor extends BaseInfoProperties implements HandlerIn
         boolean keyIsExist = redis.keyIsExist(MOBILE_SMSCODE + ":" + userIp);
 
         if (keyIsExist) {
+            GraceException.display(ResponseStatusEnum.SMS_NEED_WAIT_ERROR);
             log.info("短信发送频率太大...");
             return false;
         }
