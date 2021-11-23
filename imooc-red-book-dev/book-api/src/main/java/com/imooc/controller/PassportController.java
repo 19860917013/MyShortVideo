@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("passport")
 @Slf4j
-public class PassportController {
+public class PassportController extends BaseController {
 
     @Autowired
     private SMSUtils smsUtils;
@@ -39,12 +39,14 @@ public class PassportController {
         // TODO 获得用户ip，
         String userIp = IPUtil.getRequestIp(request);
         // TODO 根据用户ip进行限制，限制用户在60秒之内只能获得一次验证码
+        redis.setnx60s(MOBILE_SMSCODE + ":" + userIp, userIp);
 
         String code = (int) ((Math.random() * 9 + 1) * 100000) + "";
         smsUtils.sendSMS("19860917013", code);
         log.info(code);
 
         // TODO 把验证码放入到redis中，用于后续的验证
+        redis.set(MOBILE_SMSCODE + ":" + mobile, code, 30 * 60);
 
         return GraceJSONResult.ok();
     }
