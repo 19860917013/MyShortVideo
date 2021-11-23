@@ -24,21 +24,4 @@ public class BaseInfoProperties {
     public static final String REDIS_USER_TOKEN = "redis_user_token";
     public static final String REDIS_USER_INFO = "redis_user_info";
 
-    /**
-     * 获取BO中的错误信息
-     *
-     * @param
-     */
-    public Map<String, String> getErrors(BindingResult result) {
-        Map<String, String> map = new HashMap<>();
-        List<FieldError> errorList = result.getFieldErrors();
-        for (FieldError error : errorList) {
-            // 发送验证错误的时候所对应的某个属性
-            String field = error.getField();
-            // 验证的错误消息
-            String msg = error.getDefaultMessage();
-            map.put(field, msg);
-        }
-        return map;
-    }
 }

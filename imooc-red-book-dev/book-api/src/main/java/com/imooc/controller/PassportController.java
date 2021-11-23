@@ -60,15 +60,9 @@ public class PassportController extends BaseInfoProperties {
     @ApiOperation(value = "用户一键登录/注册接口")
     @PostMapping("login")
     public GraceJSONResult doLogin(@Valid @RequestBody RegistLoginBO registLoginBO,
-                                   BindingResult result,
                                    HttpServletRequest request,
                                    HttpServletResponse response) {
 
-        // 0.判断BindingResult中是否保存了错误的验证信息，如果有，则需要返回
-        if (result.hasErrors()) {
-            Map<String, String> map = getErrors(result);
-            return GraceJSONResult.errorMap(map);
-        }
         return GraceJSONResult.ok();
     }
 
