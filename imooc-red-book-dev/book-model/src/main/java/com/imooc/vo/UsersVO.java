@@ -34,6 +34,12 @@ public class UsersVO {
 
     private String userToken;
 
+    private Integer myFollowsCounts;
+    private Integer myFansCounts;
+//    private Integer myLikedVlogCounts;
+    private Integer totalLikeMeCounts;
+
+
 
 
 }
