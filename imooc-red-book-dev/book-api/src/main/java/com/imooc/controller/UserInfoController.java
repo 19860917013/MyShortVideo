@@ -1,5 +1,7 @@
 package com.imooc.controller;
 
+import com.imooc.bo.UpdatedUserBO;
+import com.imooc.enums.UserInfoModifyType;
 import com.imooc.grace.result.GraceJSONResult;
 import com.imooc.pojo.Users;
 import com.imooc.service.UserService;
@@ -10,10 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author 包建丰
@@ -72,4 +71,18 @@ public class UserInfoController extends BaseInfoProperties {
 
         return GraceJSONResult.ok(usersVO);
     }
+
+    @ApiOperation(value = "修改用户信息")
+    @PostMapping("modifyUserInfo")
+    public GraceJSONResult modifyUserInfo(@RequestBody UpdatedUserBO updatedUserBO,
+                                          @RequestParam Integer type) {
+
+        UserInfoModifyType.checkUserInfoTypeIsRight(type);
+
+        Users newUserInfo = userService.updateUserInfo(updatedUserBO, type);
+
+        // 返回最新用户信息传到前端，修改客户端缓存
+        return GraceJSONResult.ok(newUserInfo);
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.imooc.service;
 
+import com.imooc.bo.UpdatedUserBO;
 import com.imooc.pojo.Users;
 
 /**
@@ -23,6 +24,16 @@ public interface UserService {
      * 根据用户主键id查询用户信息
      */
     public Users getUser(String userId);
+
+    /**
+     * 用户修改信息
+     */
+    public Users updateUserInfo(UpdatedUserBO updatedUserBO);
+
+    /**
+     * 用户修改信息
+     */
+    public Users updateUserInfo(UpdatedUserBO updatedUserBO, Integer type);
 
 
 }
