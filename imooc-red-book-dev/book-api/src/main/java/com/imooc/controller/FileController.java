@@ -15,24 +15,24 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class FileController {
 
-    @Autowired
-    private MinIOConfig minIOConfig;
-
-    @PostMapping("upload")
-    public GraceJSONResult upload(MultipartFile file) throws Exception {
-
-        String fileName = file.getOriginalFilename();
-
-        MinIOUtils.uploadFile(minIOConfig.getBucketName(),
-                fileName,
-                file.getInputStream());
-
-        String imgUrl = minIOConfig.getFileHost()
-                + "/"
-                + minIOConfig.getBucketName()
-                + "/"
-                + fileName;
-
-        return GraceJSONResult.ok(imgUrl);
-    }
+//    @Autowired
+//    private MinIOConfig minIOConfig;
+//
+//    @PostMapping("upload")
+//    public GraceJSONResult upload(MultipartFile file) throws Exception {
+//
+//        String fileName = file.getOriginalFilename();
+//
+//        MinIOUtils.uploadFile(minIOConfig.getBucketName(),
+//                fileName,
+//                file.getInputStream());
+//
+//        String imgUrl = minIOConfig.getFileHost()
+//                + "/"
+//                + minIOConfig.getBucketName()
+//                + "/"
+//                + fileName;
+//
+//        return GraceJSONResult.ok(imgUrl);
+//    }
 }

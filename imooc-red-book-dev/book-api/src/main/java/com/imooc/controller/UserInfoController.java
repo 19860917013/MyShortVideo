@@ -1,10 +1,14 @@
 package com.imooc.controller;
 
+import com.imooc.MinIOConfig;
 import com.imooc.bo.UpdatedUserBO;
+import com.imooc.enums.FileTypeEnum;
 import com.imooc.enums.UserInfoModifyType;
 import com.imooc.grace.result.GraceJSONResult;
+import com.imooc.grace.result.ResponseStatusEnum;
 import com.imooc.pojo.Users;
 import com.imooc.service.UserService;
+import com.imooc.utils.MinIOUtils;
 import com.imooc.vo.UsersVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author 包建丰
@@ -84,5 +89,45 @@ public class UserInfoController extends BaseInfoProperties {
         // 返回最新用户信息传到前端，修改客户端缓存
         return GraceJSONResult.ok(newUserInfo);
     }
+
+    @Autowired
+    private MinIOConfig minIOConfig;
+
+    @PostMapping("modifyImage")
+    public GraceJSONResult uploadImage(@RequestParam String userId,
+                                       @RequestParam Integer type,
+                                       MultipartFile file) throws Exception {
+
+        // 判断是否符合图片类型
+        if (!type.equals(FileTypeEnum.BGIMG.type) && !type.equals(FileTypeEnum.FACE.type)) {
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+
+        String fileName = file.getOriginalFilename();
+
+        MinIOUtils.uploadFile(minIOConfig.getBucketName(),
+                fileName,
+                file.getInputStream());
+
+        String imgUrl = minIOConfig.getFileHost()
+                + "/"
+                + minIOConfig.getBucketName()
+                + "/"
+                + fileName;
+
+        // 修改bgimg到数据库
+        UpdatedUserBO updatedUsersBO = new UpdatedUserBO();
+        updatedUsersBO.setId(userId);
+        if (type.equals(FileTypeEnum.BGIMG.type)) {
+            updatedUsersBO.setBgImg(imgUrl);
+        } else if (type.equals(FileTypeEnum.FACE.type)) {
+            updatedUsersBO.setFace(imgUrl);
+        }
+        Users newUserInfo = userService.updateUserInfo(updatedUsersBO);
+
+        // 返回最新用户信息传到前端，修改客户端缓存
+        return GraceJSONResult.ok(newUserInfo);
+    }
+
 
 }
