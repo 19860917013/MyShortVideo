@@ -90,6 +90,12 @@
             <artifactId>joda-time</artifactId>
         </dependency>
 
+        <!-- MinIO -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+        </dependency>
+
         <!-- 第三方云厂商相关的依赖 -->
         <dependency>
             <groupId>com.tencentcloudapi</groupId>
