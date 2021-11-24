@@ -106,5 +106,18 @@ public class PassportController extends BaseInfoProperties {
 
     }
 
+    @ApiOperation(value = "退出登录")
+    @PostMapping("logout")
+    public GraceJSONResult logout(String userId,
+                                  HttpServletRequest request,
+                                  HttpServletResponse response) {
+        log.info(userId);
+        // 后端只需要清除用户token信息即可，前端也需要清除用户所存的会话信息
+        redis.del(REDIS_USER_TOKEN + ":" + userId);
+
+        // 思考：考虑到如果有多端的话，那么h5端的会话信息存储在哪里？退出登录后在哪里清除？
+        return GraceJSONResult.ok();
+    }
+
 
 }
