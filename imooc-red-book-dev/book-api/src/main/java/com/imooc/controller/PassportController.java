@@ -2,12 +2,17 @@ package com.imooc.controller;
 
 import com.imooc.bo.RegistLoginBO;
 import com.imooc.grace.result.GraceJSONResult;
+import com.imooc.grace.result.ResponseStatusEnum;
+import com.imooc.pojo.Users;
+import com.imooc.service.UserService;
 import com.imooc.utils.IPUtil;
 import com.imooc.utils.SMSUtils;
+import com.imooc.vo.UsersVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -19,6 +24,7 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author 包建丰
@@ -34,6 +40,9 @@ public class PassportController extends BaseInfoProperties {
 
     @Autowired
     private SMSUtils smsUtils;
+
+    @Autowired
+    private UserService userService;
 
     @PostMapping("getSMSCode")
     public GraceJSONResult getSMSCode(@RequestParam String mobile,
@@ -52,7 +61,7 @@ public class PassportController extends BaseInfoProperties {
         log.info(code);
 
         // TODO 把验证码放入到redis中，用于后续的验证
-        redis.set(MOBILE_SMSCODE + ":" + mobile, code, 30 * 60);
+        redis.set(MOBILE_SMSCODE + ":" + mobile, code, 30 * 60 * 1000);
 
         return GraceJSONResult.ok();
     }
@@ -63,7 +72,38 @@ public class PassportController extends BaseInfoProperties {
                                    HttpServletRequest request,
                                    HttpServletResponse response) {
 
-        return GraceJSONResult.ok();
+        String mobile = registLoginBO.getMobile();
+        String smsCode = registLoginBO.getSmsCode();
+
+        // 1. 从redis中获得校验验证码是否匹配
+        String redisSMSCode = redis.get(MOBILE_SMSCODE + ":" + mobile);
+        if (StringUtils.isBlank(redisSMSCode) || !redisSMSCode.equalsIgnoreCase(smsCode)) {
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.SMS_CODE_ERROR);
+        }
+
+        // 2. 查询数据库，判断该用户是否注册
+        Users user = userService.queryMobileIsExist(mobile);
+        if (user == null) {
+            // 2.1 如果用户没有注册过，则为null，需要注册信息入库
+            user = userService.createUser(mobile);
+        }
+
+
+        // 3.如果用户不为空，表示已注册用户，那么保存用户会话信息
+        String uToken = UUID.randomUUID().toString();
+        redis.set(REDIS_USER_TOKEN + ":" + user.getId(), uToken);
+
+        // 4. 用户登录注册成功以后，删除redis中的短信验证码，验证码只能使用一次，用过后作废
+        redis.del(MOBILE_SMSCODE + ":" + mobile);
+
+        // 5. 返回用户信息，包括token
+        // 6. 编写自定义vo类，把用户信息和token放入
+        UsersVO usersVO = new UsersVO();
+        BeanUtils.copyProperties(user, usersVO);
+        usersVO.setUserToken(uToken);
+
+        return GraceJSONResult.ok(usersVO);
+
     }
 
 
