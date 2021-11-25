@@ -80,4 +80,19 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
     }
 
 
+    @Transactional
+    @Override
+    public void deleteComment(String commentUserId, String commentId, String vlogId) {
+
+        Comment pendingComment = new Comment();
+        pendingComment.setId(commentId);
+        pendingComment.setCommentUserId(commentUserId);
+
+        commentMapper.delete(pendingComment);
+
+        // 评论总数累减
+        redis.decrement(REDIS_VLOG_COMMENT_COUNTS + ":" + vlogId, 1);
+    }
+
+
 }
