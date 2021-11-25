@@ -132,5 +132,20 @@ public class VlogController extends BaseInfoProperties {
         return GraceJSONResult.ok();
     }
 
+    @PostMapping("unlike")
+    public GraceJSONResult unlike(@RequestParam String userId,
+                                  @RequestParam String vlogerId,
+                                  @RequestParam String vlogId) {
+
+        redis.decrement(REDIS_VLOGER_BE_LIKED_COUNTS + ":" + vlogerId, 1);
+        redis.decrement(REDIS_VLOG_BE_LIKED_COUNTS + ":" + vlogId, 1);
+        redis.del(REDIS_USER_LIKE_VLOG + ":" + userId + ":" + vlogId);
+
+        // 我取消喜欢的视频，关联关系在数据库中删除
+        vlogService.userUnLikeVolg(vlogId, userId);
+
+        return GraceJSONResult.ok();
+    }
+
 
 }
