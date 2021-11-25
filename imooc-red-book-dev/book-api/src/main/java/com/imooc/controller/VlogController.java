@@ -2,6 +2,7 @@ package com.imooc.controller;
 
 import com.imooc.base.BaseInfoProperties;
 import com.imooc.bo.VlogBO;
+import com.imooc.enums.YesOrNo;
 import com.imooc.grace.result.GraceJSONResult;
 import com.imooc.service.VlogService;
 import com.imooc.utils.PagedGridResult;
@@ -61,6 +62,22 @@ public class VlogController extends BaseInfoProperties {
                                   @RequestParam String vlogId) {
         IndexVlogVO result = vlogService.getVlogDetail(vlogId);
         return GraceJSONResult.ok(result);
+    }
+
+    @PostMapping("changeToPrivate")
+    public GraceJSONResult changeToPrivate(@RequestParam String userId,
+                                           @RequestParam String vlogId) {
+
+        vlogService.changeToPrivateOrPublic(userId, vlogId, YesOrNo.YES.type);
+        return GraceJSONResult.ok();
+    }
+
+    @PostMapping("changeToPublic")
+    public GraceJSONResult changeToPublic(@RequestParam String userId,
+                                          @RequestParam String vlogId) {
+
+        vlogService.changeToPrivateOrPublic(userId, vlogId, YesOrNo.NO.type);
+        return GraceJSONResult.ok();
     }
 
 
