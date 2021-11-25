@@ -1,11 +1,14 @@
 package com.imooc.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.imooc.base.BaseInfoProperties;
 import com.imooc.bo.VlogBO;
 import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.VlogMapper;
 import com.imooc.mapper.VlogMapperCustom;
 import com.imooc.pojo.Vlog;
 import com.imooc.service.VlogService;
+import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.IndexVlogVO;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
@@ -26,7 +29,7 @@ import java.util.Map;
  **/
 
 @Service
-public class VlogServiceImpl implements VlogService {
+public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 
     @Autowired
     private VlogMapper vlogMapper;
@@ -57,7 +60,13 @@ public class VlogServiceImpl implements VlogService {
     private VlogMapperCustom vlogMapperCustom;
 
     @Override
-    public List<IndexVlogVO> queryIndexVlogList(String search) {
+    public PagedGridResult queryIndexVlogList(String search, Integer page, Integer pageSize) {
+
+        /**
+         * page: 第几页
+         * pageSize: 每页显示条数
+         */
+        PageHelper.startPage(page, pageSize);
 
         Map<String, Object> map = new HashMap<>();
         if (StringUtils.isNotBlank(search)) {
@@ -65,7 +74,9 @@ public class VlogServiceImpl implements VlogService {
         }
         List<IndexVlogVO> list = vlogMapperCustom.getIndexVlogList(map);
 
-        return list;
+        return setterPagedGrid(list, page);
+//    return list;
     }
+
 
 }

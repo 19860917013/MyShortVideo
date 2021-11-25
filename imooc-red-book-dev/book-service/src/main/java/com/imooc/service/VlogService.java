@@ -1,6 +1,7 @@
 package com.imooc.service;
 
 import com.imooc.bo.VlogBO;
+import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.IndexVlogVO;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface VlogService {
     /**
      * 查询首页的短视频list
      */
-    public List<IndexVlogVO> queryIndexVlogList(String search);
+    public PagedGridResult queryIndexVlogList(String search, Integer page, Integer pageSize);
 
 
 }

@@ -1,6 +1,7 @@
 package com.imooc.controller;
 
 import com.imooc.MinIOConfig;
+import com.imooc.base.BaseInfoProperties;
 import com.imooc.bo.UpdatedUserBO;
 import com.imooc.enums.FileTypeEnum;
 import com.imooc.enums.UserInfoModifyType;
