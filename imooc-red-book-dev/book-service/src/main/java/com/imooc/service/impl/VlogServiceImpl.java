@@ -3,8 +3,11 @@ package com.imooc.service.impl;
 import com.imooc.bo.VlogBO;
 import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.VlogMapper;
+import com.imooc.mapper.VlogMapperCustom;
 import com.imooc.pojo.Vlog;
 import com.imooc.service.VlogService;
+import com.imooc.vo.IndexVlogVO;
+import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author 包建丰
@@ -46,4 +52,20 @@ public class VlogServiceImpl implements VlogService {
 
         vlogMapper.insert(vlog);
     }
+
+    @Autowired
+    private VlogMapperCustom vlogMapperCustom;
+
+    @Override
+    public List<IndexVlogVO> queryIndexVlogList(String search) {
+
+        Map<String, Object> map = new HashMap<>();
+        if (StringUtils.isNotBlank(search)) {
+            map.put("search", search);
+        }
+        List<IndexVlogVO> list = vlogMapperCustom.getIndexVlogList(map);
+
+        return list;
+    }
+
 }

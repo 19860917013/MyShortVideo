@@ -1,6 +1,9 @@
 package com.imooc.service;
 
 import com.imooc.bo.VlogBO;
+import com.imooc.vo.IndexVlogVO;
+
+import java.util.List;
 
 /**
  * @author 包建丰
@@ -12,5 +15,11 @@ public interface VlogService {
      * 新增视频vlog
      */
     public void createVlog(VlogBO vlogBO);
+
+    /**
+     * 查询首页的短视频list
+     */
+    public List<IndexVlogVO> queryIndexVlogList(String search);
+
 
 }
