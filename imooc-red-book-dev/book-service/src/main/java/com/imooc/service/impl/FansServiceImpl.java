@@ -1,17 +1,23 @@
 package com.imooc.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.imooc.base.BaseInfoProperties;
 import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.FansMapper;
+import com.imooc.mapper.FansMapperCustom;
 import com.imooc.pojo.Fans;
 import com.imooc.service.FansService;
+import com.imooc.utils.PagedGridResult;
+import com.imooc.vo.VlogerVO;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 包建丰
@@ -89,6 +95,21 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
     public boolean queryDoIFollowVloger(String myId, String vlogerId) {
         Fans fan = queryFansRelationship(myId, vlogerId);
         return fan != null;
+    }
+
+    @Autowired
+    private FansMapperCustom fansMapperCustom;
+
+    @Override
+    public PagedGridResult queryMyFollows(String myId, Integer page, Integer pageSize) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("myId", myId);
+
+        PageHelper.startPage(page, pageSize);
+        List<VlogerVO> list = fansMapperCustom.queryMyFollows(map);
+
+        return setterPagedGrid(list, page);
     }
 
 

@@ -6,6 +6,7 @@ import com.imooc.grace.result.ResponseStatusEnum;
 import com.imooc.pojo.Users;
 import com.imooc.service.FansService;
 import com.imooc.service.UserService;
+import com.imooc.utils.PagedGridResult;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -93,6 +94,21 @@ public class FansController extends BaseInfoProperties {
     public GraceJSONResult queryDoIFollowVloger(@RequestParam String myId,
                                                 @RequestParam String vlogerId) {
         boolean result = fansService.queryDoIFollowVloger(myId, vlogerId);
+        return GraceJSONResult.ok(result);
+    }
+
+    @GetMapping("queryMyFollows")
+    public GraceJSONResult queryMyFollows(@RequestParam String myId,
+                                          @RequestParam Integer page,
+                                          @RequestParam Integer pageSize) {
+        if (page == null) {
+            page = COMMON_START_PAGE;
+        }
+        if (pageSize == null) {
+            pageSize = COMMON_PAGE_SIZE;
+        }
+
+        PagedGridResult result = fansService.queryMyFollows(myId, page, pageSize);
         return GraceJSONResult.ok(result);
     }
 

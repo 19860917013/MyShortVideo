@@ -1,5 +1,7 @@
 package com.imooc.service;
 
+import com.imooc.utils.PagedGridResult;
+
 /**
  * @author 包建丰
  * @date 2021/11/25 18 :01
@@ -22,5 +24,9 @@ public interface FansService {
      */
     public boolean queryDoIFollowVloger(String myId, String vlogerId);
 
+    /**
+     * 查询我关注的博主列表
+     */
+    public PagedGridResult queryMyFollows(String myId, Integer page, Integer pageSize);
 
 }
