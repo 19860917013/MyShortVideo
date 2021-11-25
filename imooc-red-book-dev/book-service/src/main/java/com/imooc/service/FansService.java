@@ -17,4 +17,10 @@ public interface FansService {
      */
     public void doCancel(String myId, String vlogerId);
 
+    /**
+     * 查询用户是否关注博主
+     */
+    public boolean queryDoIFollowVloger(String myId, String vlogerId);
+
+
 }

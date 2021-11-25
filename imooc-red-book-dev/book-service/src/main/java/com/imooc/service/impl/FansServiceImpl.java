@@ -85,5 +85,11 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
 
     }
 
+    @Override
+    public boolean queryDoIFollowVloger(String myId, String vlogerId) {
+        Fans fan = queryFansRelationship(myId, vlogerId);
+        return fan != null;
+    }
+
 
 }
