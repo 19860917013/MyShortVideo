@@ -112,6 +112,21 @@ public class FansController extends BaseInfoProperties {
         return GraceJSONResult.ok(result);
     }
 
+    @GetMapping("queryMyFans")
+    public GraceJSONResult queryMyFans(@RequestParam String myId,
+                                       @RequestParam Integer page,
+                                       @RequestParam Integer pageSize) {
+        if (page == null) {
+            page = COMMON_START_PAGE;
+        }
+        if (pageSize == null) {
+            pageSize = COMMON_PAGE_SIZE;
+        }
+
+        PagedGridResult result = fansService.queryMyFans(myId, page, pageSize);
+        return GraceJSONResult.ok(result);
+    }
+
 
 }
 

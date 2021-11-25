@@ -17,4 +17,21 @@
 
     </select>
 
+    <select id="queryMyFans" resultType="com.imooc.vo.FansVO" parameterType="map">
+
+        SELECT u.id       as fanId,
+               u.nickname as nickname,
+               u.face     as face
+        FROM fans f
+                 LEFT JOIN
+             users u
+             ON
+                 u.id = f.fan_id
+        WHERE f.vloger_id = #{paramMap.myId}
+        ORDER BY u.nickname
+                ASC
+
+    </select>
+
+
 </mapper>

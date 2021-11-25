@@ -29,4 +29,10 @@ public interface FansService {
      */
     public PagedGridResult queryMyFollows(String myId, Integer page, Integer pageSize);
 
+    /**
+     * 查询我的粉丝列表
+     */
+    public PagedGridResult queryMyFans(String myId, Integer page, Integer pageSize);
+
+
 }
