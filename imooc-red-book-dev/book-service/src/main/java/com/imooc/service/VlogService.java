@@ -59,6 +59,11 @@ public interface VlogService {
      */
     public PagedGridResult queryMyLikedList(String userId, Integer page, Integer pageSize);
 
+    /**
+     * 查询我关注博主的短视频list
+     */
+    public PagedGridResult getMyFollowVlogList(String myId, Integer page, Integer pageSize);
+
 
 
 }

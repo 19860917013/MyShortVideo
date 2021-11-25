@@ -17,5 +17,7 @@ public interface VlogMapperCustom {
 
     public List<IndexVlogVO> getMyLikedVlogList(@Param("paramMap") Map<String, Object> map);
 
+    public List<IndexVlogVO> getMyFollowVlogList(@Param("paramMap") Map<String, Object> map);
+
 
 }

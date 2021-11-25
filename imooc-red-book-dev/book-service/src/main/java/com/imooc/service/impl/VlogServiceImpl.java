@@ -9,6 +9,7 @@ import com.imooc.mapper.VlogMapper;
 import com.imooc.mapper.VlogMapperCustom;
 import com.imooc.pojo.MyLikedVlog;
 import com.imooc.pojo.Vlog;
+import com.imooc.service.FansService;
 import com.imooc.service.VlogService;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.IndexVlogVO;
@@ -83,9 +84,12 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
     }
 
 
+    @Autowired
+    private FansService fansService;
+
 
     @Override
-    public PagedGridResult queryIndexVlogList(String userId,String search, Integer page, Integer pageSize) {
+    public PagedGridResult queryIndexVlogList(String userId, String search, Integer page, Integer pageSize) {
 
         /**
          * page: 第几页
@@ -104,6 +108,11 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
             String vlogId = vo.getVlogId();
 
             if (StringUtils.isNotBlank(userId)) {
+                // 用户是否关注博主
+                boolean doIFollowVloger = fansService.queryDoIFollowVloger(userId, vlogerId);
+                vo.setDoIFollowVloger(doIFollowVloger);
+
+
                 vo.setDoILikeThisVlog(doILikeVlog(userId, vlogId));
             }
             vo.setLikeCounts(Integer.valueOf(getVlogBeLikedCounts(vlogId)));
@@ -197,6 +206,32 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
         return setterPagedGrid(list, page);
     }
 
+    @Override
+    public PagedGridResult getMyFollowVlogList(String myId, Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("myId", myId);
+        List<IndexVlogVO> list = vlogMapperCustom.getMyFollowVlogList(map);
+
+        for (IndexVlogVO vo : list) {
+            String vlogerId = vo.getVlogerId();
+            String vlogId = vo.getVlogId();
+
+            if (StringUtils.isNotBlank(myId)) {
+                // 用户必定关注博主
+                vo.setDoIFollowVloger(true);
+
+                // 用户是否点赞/喜欢当前视频
+                vo.setDoILikeThisVlog(doILikeVlog(myId, vlogId));
+            }
+
+            // 从redis中查询喜欢/点赞视频的总数
+            vo.setLikeCounts(Integer.valueOf(getVlogBeLikedCounts(vlogId)));
+        }
+
+        return setterPagedGrid(list, page);
+    }
 
 
 }
