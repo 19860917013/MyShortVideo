@@ -4,8 +4,10 @@ import com.github.pagehelper.PageHelper;
 import com.imooc.base.BaseInfoProperties;
 import com.imooc.bo.VlogBO;
 import com.imooc.enums.YesOrNo;
+import com.imooc.mapper.MyLikedVlogMapper;
 import com.imooc.mapper.VlogMapper;
 import com.imooc.mapper.VlogMapperCustom;
+import com.imooc.pojo.MyLikedVlog;
 import com.imooc.pojo.Vlog;
 import com.imooc.service.VlogService;
 import com.imooc.utils.PagedGridResult;
@@ -121,6 +123,22 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
         return setterPagedGrid(list, page);
     }
 
+    @Autowired
+    private MyLikedVlogMapper myLikedVlogMapper;
+
+
+    @Transactional
+    @Override
+    public void userLikeVolg(String vlogId, String userId) {
+        String rid = sid.nextShort();
+
+        MyLikedVlog myLikedVlog = new MyLikedVlog();
+        myLikedVlog.setId(rid);
+        myLikedVlog.setUserId(userId);
+        myLikedVlog.setVlogId(vlogId);
+
+        myLikedVlogMapper.insert(myLikedVlog);
+    }
 
 
 }

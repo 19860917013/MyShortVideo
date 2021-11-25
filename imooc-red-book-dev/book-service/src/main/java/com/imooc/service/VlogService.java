@@ -41,5 +41,11 @@ public interface VlogService {
     public PagedGridResult queryMyVlogList(String userId, Integer page,
                                            Integer pageSize, Integer yesOrNo);
 
+    /**
+     * 用户喜欢/点赞视频
+     */
+    public void userLikeVolg(String vlogId, String userId);
+
+
 
 }
