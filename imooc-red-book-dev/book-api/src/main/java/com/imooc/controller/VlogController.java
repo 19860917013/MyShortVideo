@@ -10,6 +10,7 @@ import com.imooc.vo.IndexVlogVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +43,7 @@ public class VlogController extends BaseInfoProperties {
 
     @GetMapping("indexList")
     public GraceJSONResult indexList(@RequestParam(defaultValue = "") String userId,
-            @RequestParam(defaultValue = "") String search,
+                                     @RequestParam(defaultValue = "") String search,
                                      @RequestParam Integer page,
                                      @RequestParam Integer pageSize) {
 
@@ -54,7 +55,7 @@ public class VlogController extends BaseInfoProperties {
             pageSize = COMMON_PAGE_SIZE;
         }
 
-        PagedGridResult gridResult = vlogService.queryIndexVlogList(userId,search, page, pageSize);
+        PagedGridResult gridResult = vlogService.queryIndexVlogList(userId, search, page, pageSize);
         return GraceJSONResult.ok(gridResult);
     }
 
@@ -146,6 +147,13 @@ public class VlogController extends BaseInfoProperties {
         vlogService.userUnLikeVolg(vlogId, userId);
 
         return GraceJSONResult.ok();
+    }
+
+    @ApiOperation(value = "查询短视频被喜欢/点赞的总数")
+    @PostMapping("totalLikedCounts")
+    public GraceJSONResult totalLikedCounts(@RequestParam String vlogId) {
+
+        return GraceJSONResult.ok(vlogService.getVlogBeLikedCounts(vlogId));
     }
 
 

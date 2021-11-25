@@ -72,6 +72,17 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
         return isLike;
     }
 
+    // 从redis中查询喜欢/点赞视频的总数
+    @Override
+    public Integer getVlogBeLikedCounts(String vlogId) {
+        String countsStr = redis.get(REDIS_VLOG_BE_LIKED_COUNTS + ":" + vlogId);
+        if (StringUtils.isBlank(countsStr)) {
+            countsStr = "0";
+        }
+        return Integer.valueOf(countsStr);
+    }
+
+
 
     @Override
     public PagedGridResult queryIndexVlogList(String userId,String search, Integer page, Integer pageSize) {
@@ -95,6 +106,8 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
             if (StringUtils.isNotBlank(userId)) {
                 vo.setDoILikeThisVlog(doILikeVlog(userId, vlogId));
             }
+            vo.setLikeCounts(Integer.valueOf(getVlogBeLikedCounts(vlogId)));
+
 
         }
 

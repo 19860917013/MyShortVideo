@@ -20,7 +20,7 @@ public interface VlogService {
     /**
      * 查询首页的短视频list
      */
-    public PagedGridResult queryIndexVlogList(String userId,String search, Integer page, Integer pageSize);
+    public PagedGridResult queryIndexVlogList(String userId, String search, Integer page, Integer pageSize);
 
 
     /**
@@ -50,6 +50,9 @@ public interface VlogService {
      * 用户取消喜欢/点赞视频
      */
     public void userUnLikeVolg(String vlogId, String userId);
+
+    // 获得用户点赞视频的总数
+    public Integer getVlogBeLikedCounts(String vlogId);
 
 
 }
