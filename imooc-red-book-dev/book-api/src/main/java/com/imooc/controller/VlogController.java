@@ -56,5 +56,12 @@ public class VlogController extends BaseInfoProperties {
         return GraceJSONResult.ok(gridResult);
     }
 
+    @GetMapping("detail")
+    public GraceJSONResult detail(@RequestParam(defaultValue = "") String userId,
+                                  @RequestParam String vlogId) {
+        IndexVlogVO result = vlogService.getVlogDetail(vlogId);
+        return GraceJSONResult.ok(result);
+    }
+
 
 }

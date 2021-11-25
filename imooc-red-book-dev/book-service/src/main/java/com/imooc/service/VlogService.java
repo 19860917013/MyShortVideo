@@ -23,4 +23,9 @@ public interface VlogService {
     public PagedGridResult queryIndexVlogList(String search, Integer page, Integer pageSize);
 
 
+    /**
+     * 根据主键查询vlog具体内容
+     */
+    public IndexVlogVO getVlogDetail(String vlogId);
+
 }
