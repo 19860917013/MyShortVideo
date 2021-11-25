@@ -63,6 +63,15 @@ public class FansController extends BaseInfoProperties {
         // 保存关系到数据库
         fansService.doFollow(myId, vlogerId);
 
+        // 博主粉丝+1，我的关注+1
+        redis.increment(REDIS_MY_FOLLOWS_COUNTS + ":" + myId, 1);
+        redis.increment(REDIS_MY_FANS_COUNTS + ":" + vlogerId, 1);
+
+        // 我和博主的关注关联关系，依赖redis，不要存入数据库，避免db性能瓶颈
+        // 我关注博主
+        redis.set(REDIS_FANS_AND_VLOGGER_RELATIONSHIP + ":" + myId + ":" +vlogerId, "1");
+
+
         return GraceJSONResult.ok();
     }
 }
