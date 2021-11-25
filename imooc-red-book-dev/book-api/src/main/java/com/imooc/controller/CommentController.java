@@ -4,6 +4,7 @@ import com.imooc.base.BaseInfoProperties;
 import com.imooc.bo.CommentBO;
 import com.imooc.grace.result.GraceJSONResult;
 import com.imooc.service.CommentService;
+import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.CommentVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -61,5 +62,16 @@ public class CommentController extends BaseInfoProperties {
         }
         return GraceJSONResult.ok(Integer.valueOf(countsStr));
     }
+
+    @GetMapping("list")
+    public GraceJSONResult list(@RequestParam String vlogId,
+                                @RequestParam(defaultValue = "") String userId,
+                                @RequestParam Integer page,
+                                @RequestParam Integer pageSize) {
+
+        PagedGridResult gridResult = commentService.queryVlogComments(vlogId, page, pageSize);
+        return GraceJSONResult.ok(gridResult);
+    }
+
 
 }

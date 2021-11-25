@@ -1,10 +1,13 @@
 package com.imooc.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.imooc.base.BaseInfoProperties;
 import com.imooc.bo.CommentBO;
 import com.imooc.mapper.CommentMapper;
+import com.imooc.mapper.CommentMapperCustom;
 import com.imooc.pojo.Comment;
 import com.imooc.service.CommentService;
+import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.CommentVO;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.BeanUtils;
@@ -13,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author 包建丰
@@ -56,5 +62,22 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
 
         return commentVO;
     }
+
+    @Autowired
+    private CommentMapperCustom commentMapperCustom;
+
+
+    @Override
+    public PagedGridResult queryVlogComments(String vlogId, Integer page, Integer pageSize) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("vlogId", vlogId);
+
+        PageHelper.startPage(page, pageSize);
+        List<CommentVO> list = commentMapperCustom.getCommentList(map);
+
+        return setterPagedGrid(list, page);
+    }
+
 
 }
