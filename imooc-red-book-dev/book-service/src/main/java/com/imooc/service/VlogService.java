@@ -20,7 +20,7 @@ public interface VlogService {
     /**
      * 查询首页的短视频list
      */
-    public PagedGridResult queryIndexVlogList(String search, Integer page, Integer pageSize);
+    public PagedGridResult queryIndexVlogList(String userId,String search, Integer page, Integer pageSize);
 
 
     /**

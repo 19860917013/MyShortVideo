@@ -62,8 +62,19 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
     @Autowired
     private VlogMapperCustom vlogMapperCustom;
 
+    // 用户是否点赞/喜欢当前视频
+    private boolean doILikeVlog(String myId, String vlogId) {
+        String doILike = redis.get(REDIS_USER_LIKE_VLOG + ":" + myId + ":" + vlogId);
+        boolean isLike = false;
+        if (StringUtils.isNotBlank(doILike) && doILike.equalsIgnoreCase("1")) {
+            isLike = true;
+        }
+        return isLike;
+    }
+
+
     @Override
-    public PagedGridResult queryIndexVlogList(String search, Integer page, Integer pageSize) {
+    public PagedGridResult queryIndexVlogList(String userId,String search, Integer page, Integer pageSize) {
 
         /**
          * page: 第几页
@@ -76,6 +87,17 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
             map.put("search", search);
         }
         List<IndexVlogVO> list = vlogMapperCustom.getIndexVlogList(map);
+
+        for (IndexVlogVO vo : list) {
+            String vlogerId = vo.getVlogerId();
+            String vlogId = vo.getVlogId();
+
+            if (StringUtils.isNotBlank(userId)) {
+                vo.setDoILikeThisVlog(doILikeVlog(userId, vlogId));
+            }
+
+        }
+
 
         return setterPagedGrid(list, page);
 //    return list;

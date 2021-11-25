@@ -41,7 +41,8 @@ public class VlogController extends BaseInfoProperties {
 
 
     @GetMapping("indexList")
-    public GraceJSONResult indexList(@RequestParam(defaultValue = "") String search,
+    public GraceJSONResult indexList(@RequestParam(defaultValue = "") String userId,
+            @RequestParam(defaultValue = "") String search,
                                      @RequestParam Integer page,
                                      @RequestParam Integer pageSize) {
 
@@ -53,7 +54,7 @@ public class VlogController extends BaseInfoProperties {
             pageSize = COMMON_PAGE_SIZE;
         }
 
-        PagedGridResult gridResult = vlogService.queryIndexVlogList(search, page, pageSize);
+        PagedGridResult gridResult = vlogService.queryIndexVlogList(userId,search, page, pageSize);
         return GraceJSONResult.ok(gridResult);
     }
 

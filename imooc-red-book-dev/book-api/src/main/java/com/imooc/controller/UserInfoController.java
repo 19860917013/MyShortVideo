@@ -47,7 +47,7 @@ public class UserInfoController extends BaseInfoProperties {
         // 我的粉丝总数量
         String myFansCountsStr = redis.get(REDIS_MY_FANS_COUNTS + ":" + userId);
         // 用户获赞总数，视频+评论（点赞/喜欢）总和
-        String likedVlogCountsStr = redis.get(REDIS_VLOG_BE_LIKED_COUNTS + ":" + userId);
+//        String likedVlogCountsStr = redis.get(REDIS_VLOG_BE_LIKED_COUNTS + ":" + userId);
         String likedVlogerCountsStr = redis.get(REDIS_VLOGER_BE_LIKED_COUNTS + ":" + userId);
 
 
@@ -63,9 +63,9 @@ public class UserInfoController extends BaseInfoProperties {
         if (StringUtils.isNotBlank(myFansCountsStr)) {
             myFansCounts = Integer.valueOf(myFansCountsStr);
         }
-        if (StringUtils.isNotBlank(likedVlogCountsStr)) {
-            likedVlogCounts = Integer.valueOf(likedVlogCountsStr);
-        }
+//        if (StringUtils.isNotBlank(likedVlogCountsStr)) {
+//            likedVlogCounts = Integer.valueOf(likedVlogCountsStr);
+//        }
         if (StringUtils.isNotBlank(likedVlogerCountsStr)) {
             likedVlogerCounts = Integer.valueOf(likedVlogerCountsStr);
         }
