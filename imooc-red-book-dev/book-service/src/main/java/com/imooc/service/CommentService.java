@@ -20,6 +20,7 @@ public interface CommentService {
      * 查询短视频的评论列表
      */
     public PagedGridResult queryVlogComments(String vlogId,
+                                             String userId,
                                              Integer page,
                                              Integer pageSize);
 

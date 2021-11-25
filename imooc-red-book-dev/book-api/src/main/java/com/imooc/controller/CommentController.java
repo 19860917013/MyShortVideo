@@ -69,7 +69,7 @@ public class CommentController extends BaseInfoProperties {
                                 @RequestParam Integer page,
                                 @RequestParam Integer pageSize) {
 
-        PagedGridResult gridResult = commentService.queryVlogComments(vlogId, page, pageSize);
+        PagedGridResult gridResult = commentService.queryVlogComments(vlogId, userId, page, pageSize);
         return GraceJSONResult.ok(gridResult);
     }
 
@@ -81,24 +81,23 @@ public class CommentController extends BaseInfoProperties {
         return GraceJSONResult.ok();
     }
 
-    @ApiOperation(value = "取消点赞评论")
-    @PostMapping("unlike")
-    public GraceJSONResult unlike(@RequestParam String userId, @RequestParam String commentId) {
-
-        redis.decrementHash(REDIS_VLOG_COMMENT_LIKED_COUNTS, commentId, 1);
-
-        return GraceJSONResult.ok();
-    }
-
-
     @ApiOperation(value = "点赞评论")
     @PostMapping("like")
-    public GraceJSONResult like(@RequestParam String userId, @RequestParam String commentId) {
+    public GraceJSONResult like(@RequestParam String commentId, @RequestParam String userId) {
 
 //        故意犯错 bigkey
         redis.incrementHash(REDIS_VLOG_COMMENT_LIKED_COUNTS, commentId, 1);
         redis.setHashValue(REDIS_USER_LIKE_COMMENT, userId + ":" + commentId, "1");
 
+        return GraceJSONResult.ok();
+    }
+
+    @ApiOperation(value = "取消点赞评论")
+    @PostMapping("unlike")
+    public GraceJSONResult unlike(@RequestParam String commentId, @RequestParam String userId) {
+
+        redis.decrementHash(REDIS_VLOG_COMMENT_LIKED_COUNTS, commentId, 1);
+        redis.hdel(REDIS_USER_LIKE_COMMENT, userId + ":" + commentId);
         return GraceJSONResult.ok();
     }
 

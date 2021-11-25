@@ -3,12 +3,14 @@ package com.imooc.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.imooc.base.BaseInfoProperties;
 import com.imooc.bo.CommentBO;
+import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.CommentMapper;
 import com.imooc.mapper.CommentMapperCustom;
 import com.imooc.pojo.Comment;
 import com.imooc.service.CommentService;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.CommentVO;
+import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,13 +70,31 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
 
 
     @Override
-    public PagedGridResult queryVlogComments(String vlogId, Integer page, Integer pageSize) {
+    public PagedGridResult queryVlogComments(String vlogId, String userId, Integer page, Integer pageSize) {
 
         Map<String, Object> map = new HashMap<>();
         map.put("vlogId", vlogId);
 
         PageHelper.startPage(page, pageSize);
         List<CommentVO> list = commentMapperCustom.getCommentList(map);
+
+        for (CommentVO cv : list) {
+            String commentId = cv.getCommentId();
+
+            // 当前视频的总点赞数，redis实时，数据库有延迟并且不精确，所以以redis为主
+            String countsStr = redis.getHashValue(REDIS_VLOG_COMMENT_LIKED_COUNTS, commentId);
+            Integer counts = 0;
+            if (StringUtils.isNotBlank(countsStr)) {
+                counts = Integer.valueOf(countsStr);
+            }
+            cv.setLikeCounts(counts);
+
+            // 当前用户是否点赞过该视频
+            String doILike = redis.hget(REDIS_USER_LIKE_COMMENT, userId + ":" + commentId);
+            if (StringUtils.isNotBlank(doILike) && doILike.equalsIgnoreCase("1")) {
+                cv.setIsLike(YesOrNo.YES.type);
+            }
+        }
 
         return setterPagedGrid(list, page);
     }
