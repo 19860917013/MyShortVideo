@@ -11,4 +11,10 @@ public interface FansService {
      * 关注
      */
     public void doFollow(String myId, String vlogerId);
+
+    /**
+     * 取关
+     */
+    public void doCancel(String myId, String vlogerId);
+
 }

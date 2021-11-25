@@ -69,10 +69,28 @@ public class FansController extends BaseInfoProperties {
 
         // 我和博主的关注关联关系，依赖redis，不要存入数据库，避免db性能瓶颈
         // 我关注博主
-        redis.set(REDIS_FANS_AND_VLOGGER_RELATIONSHIP + ":" + myId + ":" +vlogerId, "1");
+        redis.set(REDIS_FANS_AND_VLOGGER_RELATIONSHIP + ":" + myId + ":" + vlogerId, "1");
 
 
         return GraceJSONResult.ok();
     }
+
+    @PostMapping("cancel")
+    public GraceJSONResult cancel(@RequestParam String myId,
+                                  @RequestParam String vlogerId) {
+
+        // 此处不需要判断两个用户id是否存在，因为哪怕不存在，也删除不了
+        fansService.doCancel(myId, vlogerId);
+
+        // 博主粉丝-1，我的关注-1
+        redis.decrement(REDIS_MY_FOLLOWS_COUNTS + ":" + myId, 1);
+        redis.decrement(REDIS_MY_FANS_COUNTS + ":" + vlogerId, 1);
+
+        // 我取关博主
+        redis.del(REDIS_FANS_AND_VLOGGER_RELATIONSHIP + ":" + myId + ":" + vlogerId);
+
+        return GraceJSONResult.ok();
+    }
+
 }
 
