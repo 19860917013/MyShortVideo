@@ -156,5 +156,20 @@ public class VlogController extends BaseInfoProperties {
         return GraceJSONResult.ok(vlogService.getVlogBeLikedCounts(vlogId));
     }
 
+    @GetMapping("myLikedList")
+    public GraceJSONResult myLikedList(@RequestParam String userId,
+                                       @RequestParam Integer page,
+                                       @RequestParam Integer pageSize) {
+        if (page == null) {
+            page = COMMON_START_PAGE;
+        }
+        if (pageSize == null) {
+            pageSize = COMMON_PAGE_SIZE;
+        }
+
+        PagedGridResult gridResult = vlogService.queryMyLikedList(userId, page, pageSize);
+        return GraceJSONResult.ok(gridResult);
+    }
+
 
 }

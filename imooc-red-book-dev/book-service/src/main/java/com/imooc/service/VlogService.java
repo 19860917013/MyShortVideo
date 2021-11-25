@@ -54,5 +54,11 @@ public interface VlogService {
     // 获得用户点赞视频的总数
     public Integer getVlogBeLikedCounts(String vlogId);
 
+    /**
+     * 查询用户点赞的短视频
+     */
+    public PagedGridResult queryMyLikedList(String userId, Integer page, Integer pageSize);
+
+
 
 }
