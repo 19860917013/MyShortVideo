@@ -35,5 +35,11 @@ public interface VlogService {
                                         String vlogId,
                                         Integer yesOrNo);
 
+    /**
+     * 查询用户的公开/私密的短视频
+     */
+    public PagedGridResult queryMyVlogList(String userId, Integer page,
+                                           Integer pageSize, Integer yesOrNo);
+
 
 }
