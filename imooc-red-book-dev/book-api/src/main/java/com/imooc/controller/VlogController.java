@@ -62,7 +62,7 @@ public class VlogController extends BaseInfoProperties {
     @GetMapping("detail")
     public GraceJSONResult detail(@RequestParam(defaultValue = "") String userId,
                                   @RequestParam String vlogId) {
-        IndexVlogVO result = vlogService.getVlogDetail(vlogId);
+        IndexVlogVO result = vlogService.getVlogDetail(userId,vlogId);
         return GraceJSONResult.ok(result);
     }
 
@@ -176,6 +176,22 @@ public class VlogController extends BaseInfoProperties {
                                       @RequestParam Integer page,
                                       @RequestParam Integer pageSize) {
         PagedGridResult gridResult = vlogService.getMyFollowVlogList(myId, page, pageSize);
+        return GraceJSONResult.ok(gridResult);
+    }
+
+    @GetMapping("friendList")
+    public GraceJSONResult friendList(@RequestParam String myId,
+                                      @RequestParam Integer page,
+                                      @RequestParam Integer pageSize) {
+
+        if (page == null) {
+            page = COMMON_START_PAGE;
+        }
+        if (pageSize == null) {
+            pageSize = COMMON_PAGE_SIZE;
+        }
+
+        PagedGridResult gridResult = vlogService.getMyFriendVlogList(myId, page, pageSize);
         return GraceJSONResult.ok(gridResult);
     }
 
