@@ -32,6 +32,8 @@ public class BaseInfoProperties {
     public static final String REDIS_VLOGER_BE_LIKED_COUNTS = "redis_vloger_be_liked_counts";
 
     public static final Integer COMMON_START_PAGE = 1;
+
+    public static final Integer COMMON_START_PAGE_ZERO = 0;
     public static final Integer COMMON_PAGE_SIZE = 10;
 
     // 短视频的评论总数
