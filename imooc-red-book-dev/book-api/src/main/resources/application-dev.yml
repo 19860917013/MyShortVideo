@@ -23,6 +23,12 @@ spring:
     database: 0
     password: itzixi
 
+  data:
+    mongodb:
+      uri: mongodb://root:root@192.168.43.111:27017
+      database: imooc-red-book
+
+
 # MinIO 配置
 minio:
   endpoint: http://192.168.43.111:9000     # MinIO服务地址
