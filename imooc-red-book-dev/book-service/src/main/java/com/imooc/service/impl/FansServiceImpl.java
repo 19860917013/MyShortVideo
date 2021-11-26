@@ -2,11 +2,13 @@ package com.imooc.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.imooc.base.BaseInfoProperties;
+import com.imooc.enums.MessageEnum;
 import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.FansMapper;
 import com.imooc.mapper.FansMapperCustom;
 import com.imooc.pojo.Fans;
 import com.imooc.service.FansService;
+import com.imooc.service.MsgService;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.FansVO;
 import com.imooc.vo.VlogerVO;
@@ -49,6 +51,9 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
         return fan;
     }
 
+    @Autowired
+    private MsgService msgService;
+
     @Transactional
     @Override
     public void doFollow(String myId, String vlogerId) {
@@ -74,6 +79,9 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
         }
 
         fansMapper.insert(fans);
+
+        //系统消息：关注
+        msgService.createMsg(myId, vlogerId, MessageEnum.FOLLOW_YOU.type, null);
     }
 
     @Transactional

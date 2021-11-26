@@ -1,6 +1,7 @@
 package com.imooc.service;
 
 import com.imooc.bo.CommentBO;
+import com.imooc.pojo.Comment;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.CommentVO;
 
@@ -30,5 +31,7 @@ public interface CommentService {
     public void deleteComment(String commentUserId, String commentId, String vlogId);
 
 
+    // 根据主键查询id
+    public Comment getComment(String id);
 }
 

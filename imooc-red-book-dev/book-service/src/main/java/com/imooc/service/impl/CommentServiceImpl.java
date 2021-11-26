@@ -3,11 +3,16 @@ package com.imooc.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.imooc.base.BaseInfoProperties;
 import com.imooc.bo.CommentBO;
+import com.imooc.enums.MessageEnum;
 import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.CommentMapper;
 import com.imooc.mapper.CommentMapperCustom;
+import com.imooc.mapper.VlogMapper;
 import com.imooc.pojo.Comment;
+import com.imooc.pojo.Vlog;
 import com.imooc.service.CommentService;
+import com.imooc.service.MsgService;
+import com.imooc.service.VlogService;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.CommentVO;
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +41,12 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
     @Autowired
     private Sid sid;
 
+    @Autowired
+    private VlogService vlogService;
+
+    @Autowired
+    private MsgService msgService;
+
     @Transactional
     @Override
     public CommentVO createComment(CommentBO commentBO) {
@@ -62,8 +73,23 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
         CommentVO commentVO = new CommentVO();
         BeanUtils.copyProperties(comment, commentVO);
 
+        // 评论回复短视频
+        Vlog vlog = vlogService.getVlog(commentBO.getVlogId());
+        Map msgContent = new HashMap();
+        msgContent.put("vlogId", vlog.getId());
+        msgContent.put("vlogCover", vlog.getCover());
+        msgContent.put("commentId", commentId);
+        msgContent.put("commentContent", commentBO.getContent());
+        Integer type = MessageEnum.COMMENT_VLOG.type;
+        if (StringUtils.isNotBlank(commentBO.getFatherCommentId()) && !commentBO.getFatherCommentId().equals("0")) {
+            type = MessageEnum.REPLY_YOU.type;
+        }
+        msgService.createMsg(commentBO.getCommentUserId(), commentBO.getVlogerId(), type, msgContent);
+
+
         return commentVO;
     }
+
 
     @Autowired
     private CommentMapperCustom commentMapperCustom;
@@ -114,5 +140,8 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
         redis.decrement(REDIS_VLOG_COMMENT_COUNTS + ":" + vlogId, 1);
     }
 
-
+    @Override
+    public Comment getComment(String id) {
+        return commentMapper.selectByPrimaryKey(id);
+    }
 }

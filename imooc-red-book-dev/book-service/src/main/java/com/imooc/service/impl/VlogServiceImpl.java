@@ -3,6 +3,7 @@ package com.imooc.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.imooc.base.BaseInfoProperties;
 import com.imooc.bo.VlogBO;
+import com.imooc.enums.MessageEnum;
 import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.MyLikedVlogMapper;
 import com.imooc.mapper.VlogMapper;
@@ -10,6 +11,7 @@ import com.imooc.mapper.VlogMapperCustom;
 import com.imooc.pojo.MyLikedVlog;
 import com.imooc.pojo.Vlog;
 import com.imooc.service.FansService;
+import com.imooc.service.MsgService;
 import com.imooc.service.VlogService;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.IndexVlogVO;
@@ -191,6 +193,8 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
     @Autowired
     private MyLikedVlogMapper myLikedVlogMapper;
 
+    @Autowired
+    private MsgService msgService;
 
     @Transactional
     @Override
@@ -203,7 +207,20 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
         myLikedVlog.setVlogId(vlogId);
 
         myLikedVlogMapper.insert(myLikedVlog);
+
+        // 点赞短视频
+        Vlog vlog = this.getVlog(vlogId);
+        Map msgContent = new HashMap();
+        msgContent.put("vlogId", vlog.getId());
+        msgContent.put("vlogCover", vlog.getCover());
+        msgService.createMsg(userId, vlog.getVlogerId(), MessageEnum.LIKE_VLOG.type ,msgContent);
     }
+
+    @Override
+    public Vlog getVlog(String id) {
+        return vlogMapper.selectByPrimaryKey(id);
+    }
+
 
     @Transactional
     @Override

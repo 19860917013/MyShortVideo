@@ -2,8 +2,13 @@ package com.imooc.controller;
 
 import com.imooc.base.BaseInfoProperties;
 import com.imooc.bo.CommentBO;
+import com.imooc.enums.MessageEnum;
 import com.imooc.grace.result.GraceJSONResult;
+import com.imooc.pojo.Comment;
+import com.imooc.pojo.Vlog;
 import com.imooc.service.CommentService;
+import com.imooc.service.MsgService;
+import com.imooc.service.VlogService;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.CommentVO;
 import io.swagger.annotations.Api;
@@ -14,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author 包建丰
@@ -81,6 +88,12 @@ public class CommentController extends BaseInfoProperties {
         return GraceJSONResult.ok();
     }
 
+    @Autowired
+    private VlogService vlogService;
+
+    @Autowired
+    private MsgService msgService;
+
     @ApiOperation(value = "点赞评论")
     @PostMapping("like")
     public GraceJSONResult like(@RequestParam String commentId, @RequestParam String userId) {
@@ -88,6 +101,14 @@ public class CommentController extends BaseInfoProperties {
 //        故意犯错 bigkey
         redis.incrementHash(REDIS_VLOG_COMMENT_LIKED_COUNTS, commentId, 1);
         redis.setHashValue(REDIS_USER_LIKE_COMMENT, userId + ":" + commentId, "1");
+
+        Comment comment = commentService.getComment(commentId);
+        Vlog vlog = vlogService.getVlog(comment.getVlogId());
+        Map msgContent = new HashMap();
+        msgContent.put("commentId", commentId);
+        msgContent.put("vlogId", vlog.getId());
+        msgContent.put("vlogCover", vlog.getCover());
+        msgService.createMsg(userId, comment.getCommentUserId(), MessageEnum.LIKE_COMMENT.type, msgContent);
 
         return GraceJSONResult.ok();
     }

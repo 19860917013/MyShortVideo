@@ -1,6 +1,7 @@
 package com.imooc.service;
 
 import com.imooc.bo.VlogBO;
+import com.imooc.pojo.Vlog;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.IndexVlogVO;
 
@@ -70,5 +71,6 @@ public interface VlogService {
     public PagedGridResult getMyFriendVlogList(String myId, Integer page, Integer pageSize);
 
 
-
+    //根据主键查询 vlog
+    public Vlog getVlog(String id);
 }
