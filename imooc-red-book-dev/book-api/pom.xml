@@ -21,6 +21,19 @@
     </properties>
 
     <dependencies>
+
+        <!-- 服务注册与发现       -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
+        <!-- 微服务中心       -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.imooc</groupId>
             <artifactId>book-service</artifactId>
