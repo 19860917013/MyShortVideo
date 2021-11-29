@@ -12,6 +12,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +28,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("vlog")
+@RefreshScope
 public class VlogController extends BaseInfoProperties {
 
     @Autowired
@@ -62,7 +65,7 @@ public class VlogController extends BaseInfoProperties {
     @GetMapping("detail")
     public GraceJSONResult detail(@RequestParam(defaultValue = "") String userId,
                                   @RequestParam String vlogId) {
-        IndexVlogVO result = vlogService.getVlogDetail(userId,vlogId);
+        IndexVlogVO result = vlogService.getVlogDetail(userId, vlogId);
         return GraceJSONResult.ok(result);
     }
 
@@ -116,11 +119,17 @@ public class VlogController extends BaseInfoProperties {
         return GraceJSONResult.ok(gridResult);
     }
 
+    @Value("${nacos.counts}")
+    private Integer nacosCounts;
+
     @PostMapping("like")
     public GraceJSONResult like(@RequestParam String userId,
                                 @RequestParam String vlogerId,
                                 @RequestParam String vlogId) {
 
+
+        // 我点赞的视频，关联关系保存到数据库
+        vlogService.userLikeVolg(vlogId, userId);
 
         // 被点赞后，这个视频和视频发布者的获赞都会+1
         redis.increment(REDIS_VLOGER_BE_LIKED_COUNTS + ":" + vlogerId, 1);
@@ -128,8 +137,20 @@ public class VlogController extends BaseInfoProperties {
         // 我点赞的视频，在redis中保存关联关系
         redis.set(REDIS_USER_LIKE_VLOG + ":" + userId + ":" + vlogId, "1");
 
-        // 我点赞的视频，关联关系保存到数据库
-        vlogService.userLikeVolg(vlogId, userId);
+
+        //   使用 Nacos 将 数据刷入数据库中
+
+        String countsStr = redis.get(REDIS_VLOG_BE_LIKED_COUNTS + ":" + vlogId);
+        log.info("===========" + REDIS_VLOG_BE_LIKED_COUNTS + ":" + vlogId);
+        Integer counts = 0;
+        if (StringUtils.isNotBlank(countsStr)) {
+            counts = Integer.valueOf(countsStr);
+            if (counts >= nacosCounts) {
+                vlogService.flushCounts(vlogId, counts);
+            }
+        }
+        // TODO: 用MQ解耦
+
 
         return GraceJSONResult.ok();
     }

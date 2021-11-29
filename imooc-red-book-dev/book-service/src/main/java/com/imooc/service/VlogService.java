@@ -73,4 +73,10 @@ public interface VlogService {
 
     //根据主键查询 vlog
     public Vlog getVlog(String id);
+
+    /**
+     * 把counts数值刷入数据库
+     */
+    public void flushCounts(String vlogId, Integer counts);
+
 }
