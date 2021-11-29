@@ -1,20 +1,24 @@
 package com.imooc.controller;
 
 import com.imooc.base.BaseInfoProperties;
+import com.imooc.base.RabbitMQConfig;
 import com.imooc.bo.CommentBO;
 import com.imooc.enums.MessageEnum;
 import com.imooc.grace.result.GraceJSONResult;
+import com.imooc.mo.MessageMO;
 import com.imooc.pojo.Comment;
 import com.imooc.pojo.Vlog;
 import com.imooc.service.CommentService;
 import com.imooc.service.MsgService;
 import com.imooc.service.VlogService;
+import com.imooc.utils.JsonUtils;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.CommentVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -94,6 +98,9 @@ public class CommentController extends BaseInfoProperties {
     @Autowired
     private MsgService msgService;
 
+    @Autowired
+    public RabbitTemplate rabbitTemplate;
+
     @ApiOperation(value = "点赞评论")
     @PostMapping("like")
     public GraceJSONResult like(@RequestParam String commentId, @RequestParam String userId) {
@@ -108,7 +115,17 @@ public class CommentController extends BaseInfoProperties {
         msgContent.put("commentId", commentId);
         msgContent.put("vlogId", vlog.getId());
         msgContent.put("vlogCover", vlog.getCover());
-        msgService.createMsg(userId, comment.getCommentUserId(), MessageEnum.LIKE_COMMENT.type, msgContent);
+//        msgService.createMsg(userId, comment.getCommentUserId(), MessageEnum.LIKE_COMMENT.type, msgContent);
+        // MQ异步解耦
+        MessageMO messageMO = new MessageMO();
+        messageMO.setFromUserId(userId);
+        messageMO.setToUserId(comment.getCommentUserId());
+        messageMO.setMsgContent(msgContent);
+        rabbitTemplate.convertAndSend(
+                RabbitMQConfig.EXCHANGE_MSG,
+                "sys.msg." + MessageEnum.LIKE_COMMENT.enValue,
+                JsonUtils.objectToJson(messageMO));
+
 
         return GraceJSONResult.ok();
     }

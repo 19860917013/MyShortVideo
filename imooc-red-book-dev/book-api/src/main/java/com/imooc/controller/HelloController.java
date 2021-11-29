@@ -1,6 +1,7 @@
 package com.imooc.controller;
 
-import com.imooc.RabbitMQConfig;
+
+import com.imooc.base.RabbitMQConfig;
 import com.imooc.grace.result.GraceJSONResult;
 import com.imooc.utils.SMSUtils;
 import io.swagger.annotations.Api;
