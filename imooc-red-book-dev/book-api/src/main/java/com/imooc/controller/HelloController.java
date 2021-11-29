@@ -1,10 +1,12 @@
 package com.imooc.controller;
 
+import com.imooc.RabbitMQConfig;
 import com.imooc.grace.result.GraceJSONResult;
 import com.imooc.utils.SMSUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +35,19 @@ public class HelloController {
 
         String code = "123456";
         smsUtils.sendSMS("19860917013", code);
+
+        return GraceJSONResult.ok();
+    }
+
+    @Autowired
+    public RabbitTemplate rabbitTemplate;
+
+    @GetMapping("/produce")
+    public Object produce() {
+
+        // 向 EXCHANGE_MSG 发送一条消息，并且指定相应的路由规则
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_MSG,
+                "sys.msg.send", "发了一个消息~~");
 
         return GraceJSONResult.ok();
     }
