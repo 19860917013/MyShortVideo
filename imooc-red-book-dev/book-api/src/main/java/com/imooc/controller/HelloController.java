@@ -9,8 +9,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * @author 包建丰
@@ -20,7 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Api(tags = "Hello 测试的接口")
 @RestController
+@RefreshScope
 public class HelloController {
+
+    @Value("${nacos.counts}")
+    private Integer nacosCounts;
+
+    @GetMapping("nacosCounts")
+    public Object nacosCounts() {
+        return GraceJSONResult.ok("nacosCounts的数值为：" + nacosCounts);
+    }
 
     @ApiOperation(value = "hello-这是一个hello的测试路由")
     @GetMapping("/hello")
