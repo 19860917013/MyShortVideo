@@ -52,4 +52,15 @@ public class HelloController {
         return GraceJSONResult.ok();
     }
 
+    @GetMapping("produce2")
+    public Object produce2() throws Exception {
+
+        rabbitTemplate.convertAndSend(
+                RabbitMQConfig.EXCHANGE_MSG,
+                "sys.msg.delete",
+                "我删除了一个消息~~");
+
+        return GraceJSONResult.ok();
+    }
+
 }
