@@ -8,7 +8,7 @@ spring:
   application:
     name: imooc-red-book-nacos
   profiles:
-    active: dev
+    active: prod
   servlet:
     multipart:
       max-file-size: 2MB      # 文件上传大小限制，设置最大值，不能超过该值，否则报错
