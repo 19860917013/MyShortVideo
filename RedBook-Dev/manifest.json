@@ -1,6 +1,6 @@
 {
-    "name" : "RedBook",
-    "appid" : "__UNI__800FF13",
+    "name" : "折鹤",
+    "appid" : "__UNI__3505206",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -56,9 +56,9 @@
                 "androidStyle" : "default",
                 "iosStyle" : "common",
                 "android" : {
-                    "hdpi" : "/Users/leechenxiang/Desktop/慕红书/2.png",
-                    "xhdpi" : "/Users/leechenxiang/Desktop/慕红书/3.png",
-                    "xxhdpi" : "/Users/leechenxiang/Desktop/慕红书/4.png"
+                    "hdpi" : "C:/Users/包建丰/Desktop/photo/22.png",
+                    "xhdpi" : "C:/Users/包建丰/Desktop/photo/22.png",
+                    "xxhdpi" : "C:/Users/包建丰/Desktop/photo/22.png"
                 }
             },
             "icons" : {
