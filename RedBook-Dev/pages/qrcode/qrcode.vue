@@ -65,7 +65,7 @@
 			<view class="user-box">
 				<image mode="aspectFill" class="bg-cover" style="width: 130rpx;height: 130rpx;border-radius: 100px;align-self: center;"
 					src="../../static/face/face-arrow-2.jpg"></image>
-				<text style="align-self: center; margin-top: 10rpx;font-size: 14px;font-weight: 400;">风间影月</text>
+				<text style="align-self: center; margin-top: 10rpx;font-size: 14px;font-weight: 400;">折鹤</text>
 				
 				<view class="canvas-qrcode-box" style="align-self: center;">
 					<canvas id="qrcode" canvas-id="qrcode" style="width: 170px;height: 170px;align-self: center;" />
